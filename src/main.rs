@@ -27,15 +27,12 @@ fn index() -> Json<Message> {
 
 #[get("/<cep>")]
 fn cep(cep: String) -> Option<Json<CEPInfo>> {
-    let file = std::fs::File::open(CSV_PATH).expect("Could not open file");
+    let file = std::fs::File::open(CSV_PATH).expect("Could not open CEP .csv db");
 
     return match csv::Reader::from_reader(file)
         .deserialize::<CEPInfo>()
-        .map(|x| {
-            let desserialized = x.unwrap();
-            desserialized
-        })
-        .find(|x| x.cep == cep.parse::<i32>().expect("Could not parse int"))
+        .map(|x| x.expect("Could not read db line"))
+        .find(|x| x.cep == cep.parse::<i32>().expect("Could not parse CEP to i32"))
     {
         Some(cep_info) => Some(Json(cep_info)),
         None => None,
