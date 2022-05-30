@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate rocket;
 use rocket::serde::{json::Json, Deserialize, Serialize};
+const CSV_PATH: &str = "src/assets/cepsp.csv";
 
 #[derive(Serialize)]
 struct Message {
@@ -11,8 +12,8 @@ struct Message {
 struct CEPInfo {
     cep: i32,
     address: String,
-    neighbourhood: String,
     number_range: String,
+    neighbourhood: String,
     city_id: i32,
     state_id: i32,
 }
@@ -26,8 +27,7 @@ fn index() -> Json<Message> {
 
 #[get("/<cep>")]
 fn cep(cep: String) -> Option<Json<CEPInfo>> {
-    let file_path = "src/assets/cepsp.csv";
-    let file = std::fs::File::open(file_path).expect("Could not open file");
+    let file = std::fs::File::open(CSV_PATH).expect("Could not open file");
 
     return match csv::Reader::from_reader(file)
         .deserialize::<CEPInfo>()
