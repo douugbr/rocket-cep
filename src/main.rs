@@ -12,8 +12,8 @@ struct Message {
 struct CEPInfo {
     cep: i32,
     address: String,
-    number_range: String,
     neighbourhood: String,
+    number_range: String,
     city_id: i32,
     state_id: i32,
 }
